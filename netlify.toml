@@ -1,0 +1,5 @@
+[build]
+publish = "client/production"  # Set the publish directory to "client/production"
+command = "cd client && yarn build"
+
+name = "Bcrypty"
