@@ -132,3 +132,8 @@ dist
 #lockfiles
 yarn.lock
 pacakge-lock.json
+
+
+#Documentation
+*.docx
+*.pdf
