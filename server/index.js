@@ -56,17 +56,15 @@ app.use("/users", userRoutes);
 dotenv.config();
 mongoose.set('strictQuery', true);
 const PORT = process.env.PORT || 6001;
-const IP_ADDRESS = "0.0.0.0";
 mongoose
   .connect(
     process.env.MONGO_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
   }
   )
   .then(() => {
     app.listen(PORT, () => {
-        console.log(`Server is running on http://${IP_ADDRESS}:${PORT}`);
+      console.log(`MongoDB connected: ${conn.connection.host}`);
+      console.log(`Server is running on Port: ${PORT}`);
     });
 
     
