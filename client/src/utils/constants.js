@@ -1,14 +1,10 @@
 import abi from "./Transactions.json";
 
-export const contractAddress = "0x58c79bcd9Cfa499DaC5F90a43C0E9389294042d6";
+export const contractAddress = "0x7331F819434ebFf5aFb151eF4d8E2149fB12751A";
 export const contractABI = abi.abi;
 export const networks = {
-  mainnet: {
-    chainId: 1, // Ethereum mainnet chain ID
-    contractAddress: "0x123456789ABCDEF", // Replace with your mainnet contract address
+  localhost: {
+    chainId: 31337,
+    contractAddress,
   },
-  rinkeby: {
-    chainId: 4, // Ethereum Rinkeby testnet chain ID
-    contractAddress: "0x987654321FEDCBA", // Replace with your Rinkeby contract address
-  }, // Add more networks as needed
 };
