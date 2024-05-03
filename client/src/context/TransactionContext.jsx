@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { ethers } from "ethers";
 
 import { contractABI, contractAddress } from "../utils/constants";
@@ -39,7 +39,7 @@ export const TransactionsProvider = ({ children }) => {
           timestamp: new Date(transaction.timestamp.toNumber() * 1000).toLocaleString(),
           message: transaction.message,
           keyword: transaction.keyword,
-          amount: parseInt(transaction.amount._hex) / (10 ** 18)
+          amount: parseInt(transaction.amount.hex, 10) / (10 ** 18)
         }));
 
         console.log(structuredTransactions);
@@ -108,22 +108,34 @@ export const TransactionsProvider = ({ children }) => {
         const transactionsContract = createEthereumContract();
         const parsedAmount = ethers.utils.parseEther(amount);
 
-        await ethereum.request({
-          method: "eth_sendTransaction",
-          params: [{
-            from: currentAccount,
-            to: addressTo,
-            gas: "0x5208",
-            value: parsedAmount._hex,
-          }],
+        // Retrieve current nonce
+        const currentNonce = await ethereum.request({
+          method: "eth_getTransactionCount",
+          params: [currentAccount, "latest"]
         });
 
-        const transactionHash = await transactionsContract.addToBlockchain(addressTo, parsedAmount, message, keyword);
+        // Convert nonce to integer and increment
+        const nonce = parseInt(currentNonce, 16);
+
+        // Prepare transaction object
+        const transactionObject = {
+          from: currentAccount,
+          to: addressTo,
+          gas: "0x5208",
+          value: parsedAmount.hex,
+          nonce: ethers.utils.hexlify(nonce) // Use the correct nonce value
+        };
+
+        // Send raw transaction
+        const transactionHash = await ethereum.request({
+          method: "eth_sendTransaction",
+          params: [transactionObject]
+        });
 
         setIsLoading(true);
-        console.log(`Loading - ${transactionHash.hash}`);
-        await transactionHash.wait();
-        console.log(`Success - ${transactionHash.hash}`);
+        console.log(`Loading - ${transactionHash}`);
+        await transactionsContract.addToBlockchain(addressTo, parsedAmount, message, keyword);
+        console.log(`Success - ${transactionHash}`);
         setIsLoading(false);
 
         const transactionsCount = await transactionsContract.getTransactionCount();
@@ -135,10 +147,20 @@ export const TransactionsProvider = ({ children }) => {
       }
     } catch (error) {
       console.log(error);
-
-      throw new Error("No ethereum object");
+      // Handle errors gracefully
     }
   };
+
+  const contextValue = useMemo(() => ({
+    transactionCount,
+    connectWallet,
+    transactions,
+    currentAccount,
+    isLoading,
+    sendTransaction,
+    handleChange,
+    formData,
+  }), [transactionCount, connectWallet, transactions, currentAccount, isLoading, sendTransaction, handleChange, formData]);
 
   useEffect(() => {
     checkIfWalletIsConnect();
@@ -146,18 +168,7 @@ export const TransactionsProvider = ({ children }) => {
   }, [transactionCount]);
 
   return (
-    <TransactionContext.Provider
-      value={{
-        transactionCount,
-        connectWallet,
-        transactions,
-        currentAccount,
-        isLoading,
-        sendTransaction,
-        handleChange,
-        formData,
-      }}
-    >
+    <TransactionContext.Provider value={contextValue}>
       {children}
     </TransactionContext.Provider>
   );
