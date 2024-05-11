@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 import React, { useEffect, useState, useMemo } from "react";
 import { ethers } from "ethers";
 
