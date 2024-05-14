@@ -1,7 +1,6 @@
 import React from "react";
 import { HiMenuAlt4 } from "react-icons/hi";
 import { AiOutlineClose } from "react-icons/ai";
-// import { useNavigate } from "react-router-dom";
 import logo from "../../images/logo.png";
 
 const NavBarItem = ({ title, classprops }) => (
@@ -10,7 +9,6 @@ const NavBarItem = ({ title, classprops }) => (
 
 const Navbar = () => {
   const [toggleMenu, setToggleMenu] = React.useState(false);
-  // const navigate = useNavigate(); // Import useNavigate hook
 
   return (
     <nav className="w-full flex md:justify-center justify-between items-center p-4">
@@ -21,13 +19,6 @@ const Navbar = () => {
         {["Market", "Exchange", "Tutorials", "Wallets"].map((item, index) => (
           <NavBarItem key={item + index} title={item} />
         ))}
-        {/* Replace the Link with a div element */}
-        <div
-          className="bg-[#2952e3] py-2 px-7 mx-4 rounded-full cursor-pointer hover:bg-[#2546bd]"
-          // onClick={() => navigate("/login")} // Navigate to /login on click
-        >
-          Login
-        </div>
       </ul>
       <div className="flex relative">
         {!toggleMenu && (
@@ -61,16 +52,6 @@ const Navbar = () => {
                 />
               )
             )}
-            {/* Replace the Link with a div element */}
-            <div
-              className="my-2 text-lg"
-              // onClick={() => {
-              //   navigate("/login"); // Navigate to /login on click
-              //   setToggleMenu(false); // Close the menu
-              // }}
-            >
-              Login
-            </div>
           </ul>
         )}
       </div>
