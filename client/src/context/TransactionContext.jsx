@@ -123,7 +123,7 @@ export const TransactionsProvider = ({ children }) => {
           from: currentAccount,
           to: addressTo,
           gas: "0x5208",
-          value: parsedAmount.hex,
+          value: parsedAmount._hex,
           nonce: ethers.utils.hexlify(nonce) // Use the correct nonce value
         };
 
